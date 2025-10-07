@@ -12,13 +12,15 @@ async function enviar() {
   input.value = "";
 
   try {
-    // Exemplo de resposta automática sem chave da OpenAI
-    // Para uso real, troque por função serverless ou back-end seguro
-    await new Promise(r => setTimeout(r, 1000));
-    const resposta = "Essa é uma resposta de teste. Em produção, use API OpenAI via servidor seguro.";
-    
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: mensagem })
+    });
+
+    const data = await res.json();
     if(statusDiv){ statusDiv.remove(); statusDiv = null; }
-    adicionarMensagem("bot", resposta);
+    adicionarMensagem("bot", data.reply.replace(/\n/g,"<br>"));
   } catch (err) {
     if(statusDiv){ statusDiv.remove(); statusDiv = null; }
     adicionarMensagem("bot", "Erro: não foi possível conectar à IA.");
